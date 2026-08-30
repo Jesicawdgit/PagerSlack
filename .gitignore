@@ -42,3 +42,10 @@ Thumbs.db
 # =========================
 .vscode/
 .idea/
+
+# AI assistant instructions
+CLAUDE.md
+
+# Docs held back until project completion, committed at the end
+ARCHITECTURE.md
+DECISIONS.md
