@@ -92,3 +92,15 @@ a {
   background-color: var(--ps-accent);
   color: #fff;
 }
+
+/* mention toast (Toast.jsx) */
+.toast-mention {
+  background-color: var(--ps-tertiary);
+  color: #fff;
+}
+
+/* @mention highlighting (MessageItem.jsx) */
+.mention-highlight {
+  color: var(--ps-tertiary);
+  font-weight: 600;
+}

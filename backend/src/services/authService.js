@@ -7,13 +7,17 @@ const env = require('../config/environment');
 const SALT_ROUNDS = 10;
 const TOKEN_EXPIRY = '7d';
 
+async function hashPassword(password) {
+  return bcrypt.hash(password, SALT_ROUNDS);
+}
+
 async function registerUser({ name, email, password, role }) {
   const existing = await User.findOne({ email });
   if (existing) {
     throw new ApiError(409, 'EMAIL_TAKEN', 'An account with this email already exists');
   }
 
-  const hashed = await bcrypt.hash(password, SALT_ROUNDS);
+  const hashed = await hashPassword(password);
   const user = await User.create({ name, email, password: hashed, role });
   return user;
 }
@@ -38,4 +42,4 @@ function generateToken(user) {
   });
 }
 
-module.exports = { registerUser, loginUser, generateToken, TOKEN_EXPIRY };
+module.exports = { registerUser, loginUser, generateToken, hashPassword, TOKEN_EXPIRY };

@@ -3,8 +3,10 @@ const app = require('./app');
 const env = require('./config/environment');
 const connectDB = require('./config/database');
 const logger = require('./utils/logger');
+const { initSocketServer } = require('./sockets/socketServer');
 
 const server = http.createServer(app);
+initSocketServer(server);
 
 async function start() {
   await connectDB();

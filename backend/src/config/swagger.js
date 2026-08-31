@@ -9,6 +9,8 @@ const swaggerJsdoc = require('swagger-jsdoc');
  *     description: Team creation and membership
  *   - name: Channels
  *     description: Channels within a team
+ *   - name: Messages
+ *     description: Messages within a channel
  *
  * components:
  *   securitySchemes:
@@ -161,6 +163,41 @@ const swaggerJsdoc = require('swagger-jsdoc');
  *         schema: { type: string }
  *     responses:
  *       200: { description: The channel }
+ *       404: { description: Channel not found }
+ *
+ * /channels/{id}/messages:
+ *   get:
+ *     summary: List messages in a channel, oldest first
+ *     tags: [Messages]
+ *     security: [{ cookieAuth: [] }]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     responses:
+ *       200: { description: List of messages }
+ *       404: { description: Channel not found }
+ *   post:
+ *     summary: Post a message to a channel
+ *     tags: [Messages]
+ *     security: [{ cookieAuth: [] }]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [content]
+ *             properties:
+ *               content: { type: string, maxLength: 2000 }
+ *     responses:
+ *       201: { description: Message created }
  *       404: { description: Channel not found }
  */
 
