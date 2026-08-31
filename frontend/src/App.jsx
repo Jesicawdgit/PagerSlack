@@ -4,6 +4,8 @@ import { useAuth } from './hooks/useAuth';
 import Login from './pages/Login';
 import Register from './pages/Register';
 import Workspace from './pages/Workspace';
+import Channel from './pages/Channel';
+import AppLayout from './components/layout/AppLayout';
 import './App.css';
 
 function ProtectedRoute({ children }) {
@@ -24,10 +26,13 @@ function AppRoutes() {
         path="/"
         element={
           <ProtectedRoute>
-            <Workspace />
+            <AppLayout />
           </ProtectedRoute>
         }
-      />
+      >
+        <Route index element={<Workspace />} />
+        <Route path="channels/:channelId" element={<Channel />} />
+      </Route>
     </Routes>
   );
 }

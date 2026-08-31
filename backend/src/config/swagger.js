@@ -5,6 +5,10 @@ const swaggerJsdoc = require('swagger-jsdoc');
  * tags:
  *   - name: Auth
  *     description: Registration, login, and session management
+ *   - name: Teams
+ *     description: Team creation and membership
+ *   - name: Channels
+ *     description: Channels within a team
  *
  * components:
  *   securitySchemes:
@@ -69,6 +73,95 @@ const swaggerJsdoc = require('swagger-jsdoc');
  *     responses:
  *       200: { description: Current user }
  *       401: { description: Not authenticated }
+ *
+ * /teams:
+ *   get:
+ *     summary: List all teams
+ *     tags: [Teams]
+ *     security: [{ cookieAuth: [] }]
+ *     responses:
+ *       200: { description: List of teams }
+ *   post:
+ *     summary: Create a team and join it as the creator
+ *     tags: [Teams]
+ *     security: [{ cookieAuth: [] }]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [name]
+ *             properties:
+ *               name: { type: string }
+ *     responses:
+ *       201: { description: Team created, creator assigned to it }
+ *       400: { description: Validation error }
+ *       409: { description: Team name taken, or creator already belongs to a team }
+ *
+ * /teams/{id}:
+ *   get:
+ *     summary: Get a team by id
+ *     tags: [Teams]
+ *     security: [{ cookieAuth: [] }]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     responses:
+ *       200: { description: The team }
+ *       404: { description: Team not found }
+ *
+ * /teams/{teamId}/channels:
+ *   get:
+ *     summary: List channels for a team
+ *     tags: [Channels]
+ *     security: [{ cookieAuth: [] }]
+ *     parameters:
+ *       - in: path
+ *         name: teamId
+ *         required: true
+ *         schema: { type: string }
+ *     responses:
+ *       200: { description: List of channels }
+ *       404: { description: Team not found }
+ *   post:
+ *     summary: Create a channel in a team
+ *     tags: [Channels]
+ *     security: [{ cookieAuth: [] }]
+ *     parameters:
+ *       - in: path
+ *         name: teamId
+ *         required: true
+ *         schema: { type: string }
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [name]
+ *             properties:
+ *               name: { type: string }
+ *     responses:
+ *       201: { description: Channel created }
+ *       404: { description: Team not found }
+ *       409: { description: Channel name already taken on this team }
+ *
+ * /channels/{id}:
+ *   get:
+ *     summary: Get a channel by id
+ *     tags: [Channels]
+ *     security: [{ cookieAuth: [] }]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     responses:
+ *       200: { description: The channel }
+ *       404: { description: Channel not found }
  */
 
 const swaggerSpec = swaggerJsdoc({

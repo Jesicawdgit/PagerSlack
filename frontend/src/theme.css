@@ -55,6 +55,12 @@ a {
   text-decoration: none;
 }
 
+/* Sidebar active channel link */
+.list-group-item.active {
+  --bs-list-group-active-bg: var(--ps-primary);
+  --bs-list-group-active-border-color: var(--ps-primary);
+}
+
 /* role tags (Badge variant="role") */
 .badge-role {
   background-color: var(--ps-tertiary);

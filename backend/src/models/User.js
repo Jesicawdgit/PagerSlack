@@ -27,6 +27,11 @@ const userSchema = new mongoose.Schema(
       enum: ROLES,
       default: 'EMPLOYEE',
     },
+    team: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Team',
+      default: null,
+    },
   },
   { timestamps: true }
 );
