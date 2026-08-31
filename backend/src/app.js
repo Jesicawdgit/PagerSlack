@@ -1,8 +1,11 @@
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
+const swaggerUi = require('swagger-ui-express');
 const env = require('./config/environment');
 const { notFound, errorHandler } = require('./middleware/errorMiddleware');
+const swaggerSpec = require('./config/swagger');
+const authRoutes = require('./routes/authRoutes');
 
 const app = express();
 
@@ -20,6 +23,9 @@ app.get('/api/v1/health', (req, res) => {
     },
   });
 });
+
+app.use('/api/v1/auth', authRoutes);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use(notFound);
 app.use(errorHandler);

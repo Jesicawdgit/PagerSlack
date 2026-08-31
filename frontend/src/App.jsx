@@ -1,48 +1,42 @@
-import { useEffect, useState } from 'react';
-import client from './api/client';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import { AuthProvider } from './context/AuthContext';
+import { useAuth } from './hooks/useAuth';
+import Login from './pages/Login';
+import Register from './pages/Register';
+import Workspace from './pages/Workspace';
 import './App.css';
 
-function App() {
-  const [status, setStatus] = useState('checking');
-  const [details, setDetails] = useState(null);
+function ProtectedRoute({ children }) {
+  const { user, loading } = useAuth();
 
-  useEffect(() => {
-    let cancelled = false;
+  if (loading) return null;
+  if (!user) return <Navigate to="/login" replace />;
 
-    client
-      .get('/health')
-      .then((res) => {
-        if (cancelled) return;
-        setStatus('online');
-        setDetails(res.data.data);
-      })
-      .catch(() => {
-        if (cancelled) return;
-        setStatus('offline');
-        setDetails(null);
-      });
+  return children;
+}
 
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
+function AppRoutes() {
   return (
-    <div className="status-page">
-      <h1>PagerSlack</h1>
-      <div className={`status-card status-${status}`}>
-        {status === 'checking' && <p>Checking backend...</p>}
-        {status === 'online' && (
-          <>
-            <p className="status-label">Backend Online</p>
-            <p className="status-meta">
-              env: {details?.env} · {details?.timestamp}
-            </p>
-          </>
-        )}
-        {status === 'offline' && <p className="status-label">Backend Offline</p>}
-      </div>
-    </div>
+    <Routes>
+      <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route
+        path="/"
+        element={
+          <ProtectedRoute>
+            <Workspace />
+          </ProtectedRoute>
+        }
+      />
+    </Routes>
+  );
+}
+
+function App() {
+  return (
+    <AuthProvider>
+      <AppRoutes />
+    </AuthProvider>
   );
 }
 

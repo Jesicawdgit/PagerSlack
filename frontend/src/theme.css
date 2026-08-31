@@ -1,0 +1,88 @@
+:root {
+  /* brand tokens */
+  --ps-bg: #f5f6fa;
+  --ps-primary: #6f42c1;
+  --ps-accent: #007bff;
+  --ps-tertiary: #17a2b8;
+
+  /* severity/status ramp, independent of brand */
+  --ps-severity-low: #28a745;
+  --ps-severity-medium: #ffc107;
+  --ps-severity-high: #fd7e14;
+  --ps-severity-critical: #dc3545;
+
+  /* bootstrap overrides */
+  --bs-body-bg: var(--ps-bg);
+  --bs-link-color: var(--ps-accent);
+  --bs-link-hover-color: var(--ps-accent);
+  --bs-link-decoration: none;
+}
+
+body {
+  background-color: var(--ps-bg);
+}
+
+/* .btn-primary: hover/active/focus pinned to the same value as resting state */
+.btn-primary {
+  --bs-btn-color: #fff;
+  --bs-btn-bg: var(--ps-primary);
+  --bs-btn-border-color: var(--ps-primary);
+  --bs-btn-hover-color: #fff;
+  --bs-btn-hover-bg: var(--ps-primary);
+  --bs-btn-hover-border-color: var(--ps-primary);
+  --bs-btn-active-color: #fff;
+  --bs-btn-active-bg: var(--ps-primary);
+  --bs-btn-active-border-color: var(--ps-primary);
+  --bs-btn-disabled-bg: var(--ps-primary);
+  --bs-btn-disabled-border-color: var(--ps-primary);
+  --bs-btn-focus-box-shadow: none;
+}
+
+.btn-secondary {
+  --bs-btn-color: #495057;
+  --bs-btn-bg: #e9ecef;
+  --bs-btn-border-color: #e9ecef;
+  --bs-btn-hover-color: #495057;
+  --bs-btn-hover-bg: #e9ecef;
+  --bs-btn-hover-border-color: #e9ecef;
+  --bs-btn-active-color: #495057;
+  --bs-btn-active-bg: #e9ecef;
+  --bs-btn-active-border-color: #e9ecef;
+  --bs-btn-focus-box-shadow: none;
+}
+
+a {
+  text-decoration: none;
+}
+
+/* role tags (Badge variant="role") */
+.badge-role {
+  background-color: var(--ps-tertiary);
+  color: #fff;
+}
+
+/* severity/status pills (Badge variant="severity-*") */
+.badge-severity-low {
+  background-color: var(--ps-severity-low);
+  color: #fff;
+}
+
+.badge-severity-medium {
+  background-color: var(--ps-severity-medium);
+  color: #212529;
+}
+
+.badge-severity-high {
+  background-color: var(--ps-severity-high);
+  color: #fff;
+}
+
+.badge-severity-critical {
+  background-color: var(--ps-severity-critical);
+  color: #fff;
+}
+
+.badge-accent {
+  background-color: var(--ps-accent);
+  color: #fff;
+}
