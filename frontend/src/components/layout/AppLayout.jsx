@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { Outlet } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
 import { useSocket } from '../../hooks/useSocket';
@@ -41,17 +41,20 @@ export default function AppLayout() {
     setChannels((prev) => [...prev, res.data.data.channel]);
   }
 
+  const pushToast = useCallback((text) => {
+    setToasts((prev) => [...prev, { id: crypto.randomUUID(), text }]);
+  }, []);
+
   useEffect(() => {
     if (!socket) return undefined;
 
     function handleNotification(notification) {
-      const text = `${notification.fromUser.name} mentioned you in #${notification.channel.name}`;
-      setToasts((prev) => [...prev, { id: notification._id, text }]);
+      pushToast(`${notification.fromUser.name} mentioned you in #${notification.channel.name}`);
     }
 
     socket.on('notification:new', handleNotification);
     return () => socket.off('notification:new', handleNotification);
-  }, [socket]);
+  }, [socket, pushToast]);
 
   function dismissToast(id) {
     setToasts((prev) => prev.filter((toast) => toast.id !== id));
@@ -61,9 +64,9 @@ export default function AppLayout() {
     <div className="d-flex" style={{ minHeight: '100vh' }}>
       <Sidebar team={team} channels={channels} onCreateChannel={handleCreateChannel} />
       <div className="flex-grow-1">
-        <Outlet />
+        <Outlet context={{ channels, pushToast }} />
       </div>
-      <div className="position-fixed bottom-0 end-0 p-3" style={{ zIndex: 1080 }}>
+      <div className="position-fixed top-0 end-0 p-3" style={{ zIndex: 1080 }}>
         {toasts.map((toast) => (
           <Toast key={toast.id} text={toast.text} onDismiss={() => dismissToast(toast.id)} />
         ))}

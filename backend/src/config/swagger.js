@@ -11,6 +11,8 @@ const swaggerJsdoc = require('swagger-jsdoc');
  *     description: Channels within a team
  *   - name: Messages
  *     description: Messages within a channel
+ *   - name: Incidents
+ *     description: Incident creation and history
  *
  * components:
  *   securitySchemes:
@@ -199,6 +201,62 @@ const swaggerJsdoc = require('swagger-jsdoc');
  *     responses:
  *       201: { description: Message created }
  *       404: { description: Channel not found }
+ *
+ * /incidents:
+ *   get:
+ *     summary: List all incidents
+ *     tags: [Incidents]
+ *     security: [{ cookieAuth: [] }]
+ *     responses:
+ *       200: { description: List of incidents }
+ *   post:
+ *     summary: Create an incident
+ *     tags: [Incidents]
+ *     security: [{ cookieAuth: [] }]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [title, severity, channel]
+ *             properties:
+ *               title: { type: string }
+ *               description: { type: string }
+ *               severity: { type: string, enum: [LOW, MEDIUM, HIGH, CRITICAL] }
+ *               channel: { type: string }
+ *     responses:
+ *       201: { description: Incident created, CREATED event written }
+ *       400: { description: Validation error }
+ *       404: { description: Channel not found }
+ *
+ * /incidents/{id}:
+ *   get:
+ *     summary: Get an incident by id
+ *     tags: [Incidents]
+ *     security: [{ cookieAuth: [] }]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     responses:
+ *       200: { description: The incident }
+ *       404: { description: Incident not found }
+ *
+ * /incidents/{id}/history:
+ *   get:
+ *     summary: Get an incident's event history
+ *     tags: [Incidents]
+ *     security: [{ cookieAuth: [] }]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     responses:
+ *       200: { description: List of incident events }
+ *       404: { description: Incident not found }
  */
 
 const swaggerSpec = swaggerJsdoc({

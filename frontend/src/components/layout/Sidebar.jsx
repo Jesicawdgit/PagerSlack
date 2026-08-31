@@ -31,6 +31,17 @@ export default function Sidebar({ team, channels, onCreateChannel }) {
       </div>
 
       {team && (
+        <NavLink
+          to="/incidents"
+          className={({ isActive }) =>
+            `list-group-item list-group-item-action mb-3${isActive ? ' active' : ''}`
+          }
+        >
+          Incidents
+        </NavLink>
+      )}
+
+      {team && (
         <>
           <div className="text-secondary small text-uppercase mb-2">Channels</div>
           <div className="list-group list-group-flush mb-3">

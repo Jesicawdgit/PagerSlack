@@ -6,6 +6,8 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Workspace from './pages/Workspace';
 import Channel from './pages/Channel';
+import Incidents from './pages/Incidents';
+import IncidentDetails from './pages/IncidentDetails';
 import AppLayout from './components/layout/AppLayout';
 import './App.css';
 
@@ -33,6 +35,8 @@ function AppRoutes() {
       >
         <Route index element={<Workspace />} />
         <Route path="channels/:channelId" element={<Channel />} />
+        <Route path="incidents" element={<Incidents />} />
+        <Route path="incidents/:incidentId" element={<IncidentDetails />} />
       </Route>
     </Routes>
   );
