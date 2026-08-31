@@ -37,4 +37,28 @@ router.get(
   incidentController.getIncidentHistory
 );
 
+router.post(
+  '/:id/assign',
+  [
+    param('id').isMongoId().withMessage('Invalid incident id'),
+    body('assigneeId').isMongoId().withMessage('Invalid assignee id'),
+  ],
+  validateRequest,
+  incidentController.assignIncident
+);
+
+router.post(
+  '/:id/acknowledge',
+  [param('id').isMongoId().withMessage('Invalid incident id')],
+  validateRequest,
+  incidentController.acknowledgeIncident
+);
+
+router.post(
+  '/:id/resolve',
+  [param('id').isMongoId().withMessage('Invalid incident id')],
+  validateRequest,
+  incidentController.resolveIncident
+);
+
 module.exports = router;

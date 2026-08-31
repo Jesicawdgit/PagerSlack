@@ -14,6 +14,7 @@ const incidentSchema = new mongoose.Schema(
     escalationLevel: { type: String, enum: ESCALATION_LEVELS, default: 'EMPLOYEE' },
     channel: { type: mongoose.Schema.Types.ObjectId, ref: 'Channel', required: true },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+    assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
   },
   { timestamps: true }
 );

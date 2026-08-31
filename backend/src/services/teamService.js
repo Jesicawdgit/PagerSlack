@@ -29,7 +29,8 @@ async function getTeamById(id) {
   if (!team) {
     throw new ApiError(404, 'TEAM_NOT_FOUND', 'Team not found');
   }
-  return team;
+  const members = await User.find({ team: id }, 'name role');
+  return { ...team.toObject(), members };
 }
 
 module.exports = { listTeams, createTeam, getTeamById };

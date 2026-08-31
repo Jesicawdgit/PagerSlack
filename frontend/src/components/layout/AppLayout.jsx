@@ -64,7 +64,7 @@ export default function AppLayout() {
     <div className="d-flex" style={{ minHeight: '100vh' }}>
       <Sidebar team={team} channels={channels} onCreateChannel={handleCreateChannel} />
       <div className="flex-grow-1">
-        <Outlet context={{ channels, pushToast }} />
+        <Outlet context={{ team, channels, pushToast }} />
       </div>
       <div className="position-fixed top-0 end-0 p-3" style={{ zIndex: 1080 }}>
         {toasts.map((toast) => (

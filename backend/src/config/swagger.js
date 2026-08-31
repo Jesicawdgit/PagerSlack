@@ -257,6 +257,60 @@ const swaggerJsdoc = require('swagger-jsdoc');
  *     responses:
  *       200: { description: List of incident events }
  *       404: { description: Incident not found }
+ *
+ * /incidents/{id}/assign:
+ *   post:
+ *     summary: Assign an incident to a user
+ *     tags: [Incidents]
+ *     security: [{ cookieAuth: [] }]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [assigneeId]
+ *             properties:
+ *               assigneeId: { type: string }
+ *     responses:
+ *       200: { description: Incident assigned, ASSIGNED event written, incident:updated emitted }
+ *       404: { description: Incident or user not found }
+ *       409: { description: Incident already resolved }
+ *
+ * /incidents/{id}/acknowledge:
+ *   post:
+ *     summary: Acknowledge an incident
+ *     tags: [Incidents]
+ *     security: [{ cookieAuth: [] }]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     responses:
+ *       200: { description: Incident acknowledged, ACKNOWLEDGED event written, incident:acknowledged emitted }
+ *       404: { description: Incident not found }
+ *       409: { description: Incident already resolved or already acknowledged }
+ *
+ * /incidents/{id}/resolve:
+ *   post:
+ *     summary: Resolve an incident
+ *     tags: [Incidents]
+ *     security: [{ cookieAuth: [] }]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     responses:
+ *       200: { description: Incident resolved, RESOLVED event written, incident:resolved emitted }
+ *       404: { description: Incident not found }
+ *       409: { description: Incident already resolved }
  */
 
 const swaggerSpec = swaggerJsdoc({

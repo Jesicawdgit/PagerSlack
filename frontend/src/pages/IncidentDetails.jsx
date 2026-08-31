@@ -1,12 +1,19 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useOutletContext, useParams } from 'react-router-dom';
 import * as incidentApi from '../api/incidentApi';
-import Badge from '../components/common/Badge';
-import { severityVariant } from '../utils/severity';
+import { useSocket } from '../hooks/useSocket';
+import IncidentHeader from '../components/incidents/IncidentHeader';
+import IncidentTimeline from '../components/incidents/IncidentTimeline';
+import IncidentActions from '../components/incidents/IncidentActions';
+
+const INCIDENT_SOCKET_EVENTS = ['incident:updated', 'incident:acknowledged', 'incident:resolved'];
 
 export default function IncidentDetails() {
   const { incidentId } = useParams();
+  const { team, pushToast } = useOutletContext();
+  const socket = useSocket();
   const [incident, setIncident] = useState(null);
+  const [events, setEvents] = useState([]);
 
   useEffect(() => {
     let cancelled = false;
@@ -18,21 +25,49 @@ export default function IncidentDetails() {
     };
   }, [incidentId]);
 
-  if (!incident) return null;
+  useEffect(() => {
+    let cancelled = false;
+    incidentApi.getIncidentHistory(incidentId).then((res) => {
+      if (!cancelled) setEvents(res.data.data.events);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [incidentId]);
+
+  const channelId = incident?.channel?._id;
+
+  useEffect(() => {
+    if (!socket || !channelId) return undefined;
+
+    function joinChannel() {
+      socket.emit('channel:join', channelId);
+    }
+    function handleIncidentEvent(payload) {
+      if (payload._id !== incidentId) return;
+      setIncident(payload);
+      incidentApi.getIncidentHistory(incidentId).then((res) => setEvents(res.data.data.events));
+    }
+
+    joinChannel();
+    socket.on('connect', joinChannel);
+    INCIDENT_SOCKET_EVENTS.forEach((eventName) => socket.on(eventName, handleIncidentEvent));
+
+    return () => {
+      socket.off('connect', joinChannel);
+      INCIDENT_SOCKET_EVENTS.forEach((eventName) => socket.off(eventName, handleIncidentEvent));
+      socket.emit('channel:leave', channelId);
+    };
+  }, [socket, incidentId, channelId]);
+
+  if (!incident || !team) return null;
 
   return (
     <div className="p-4">
-      <div className="text-secondary small mb-1">
-        {incident.incidentNumber} · # {incident.channel?.name}
-      </div>
-      <h2 className="h4 mb-3">{incident.title}</h2>
-      <div className="d-flex gap-2 mb-3">
-        <Badge variant={severityVariant(incident.severity)}>{incident.severity}</Badge>
-        <Badge variant="accent">{incident.status}</Badge>
-        <Badge variant="role">{incident.escalationLevel}</Badge>
-      </div>
-      <p>{incident.description}</p>
-      <p className="text-secondary small">Reported by {incident.createdBy?.name}</p>
+      <IncidentHeader incident={incident} />
+      <IncidentActions incident={incident} members={team.members ?? []} pushToast={pushToast} />
+      <hr className="my-4" />
+      <IncidentTimeline events={events} />
     </div>
   );
 }

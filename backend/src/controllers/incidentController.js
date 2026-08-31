@@ -27,4 +27,37 @@ async function getIncidentHistory(req, res) {
   res.status(200).json({ success: true, data: { events } });
 }
 
-module.exports = { listIncidents, createIncident, getIncident, getIncidentHistory };
+async function assignIncident(req, res) {
+  const incident = await incidentService.assignIncident({
+    incidentId: req.params.id,
+    assigneeId: req.body.assigneeId,
+    actorId: req.user._id,
+  });
+  res.status(200).json({ success: true, data: { incident } });
+}
+
+async function acknowledgeIncident(req, res) {
+  const incident = await incidentService.acknowledgeIncident({
+    incidentId: req.params.id,
+    actorId: req.user._id,
+  });
+  res.status(200).json({ success: true, data: { incident } });
+}
+
+async function resolveIncident(req, res) {
+  const incident = await incidentService.resolveIncident({
+    incidentId: req.params.id,
+    actorId: req.user._id,
+  });
+  res.status(200).json({ success: true, data: { incident } });
+}
+
+module.exports = {
+  listIncidents,
+  createIncident,
+  getIncident,
+  getIncidentHistory,
+  assignIncident,
+  acknowledgeIncident,
+  resolveIncident,
+};

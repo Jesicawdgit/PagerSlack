@@ -15,3 +15,15 @@ export function getIncident(incidentId) {
 export function getIncidentHistory(incidentId) {
   return client.get(`/incidents/${incidentId}/history`);
 }
+
+export function assignIncident(incidentId, assigneeId) {
+  return client.post(`/incidents/${incidentId}/assign`, { assigneeId });
+}
+
+export function acknowledgeIncident(incidentId) {
+  return client.post(`/incidents/${incidentId}/acknowledge`);
+}
+
+export function resolveIncident(incidentId) {
+  return client.post(`/incidents/${incidentId}/resolve`);
+}
