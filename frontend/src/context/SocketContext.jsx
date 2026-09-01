@@ -12,7 +12,8 @@ export function SocketProvider({ children }) {
   useEffect(() => {
     if (!user) return undefined;
 
-    const conn = io({ withCredentials: true });
+    const socketUrl = import.meta.env.VITE_SOCKET_URL;
+    const conn = socketUrl ? io(socketUrl, { withCredentials: true }) : io({ withCredentials: true });
     function handleConnect() {
       setSocket(conn);
     }
