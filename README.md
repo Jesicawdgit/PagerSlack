@@ -1,9 +1,6 @@
 # PagerSlack
-Team Communication and Incident Escalation System: a small Slack-like application for a software development team.  The application should allow team members to communicate through channels, tag other users, and create incidents from important messages.
-# PagerSlack
 
-A Slack-like team communication and incident escalation platform
-for software development teams.
+A Slack-like team communication and incident escalation platform for software development teams. Team members message in channels, tag each other, and turn messages into incidents that auto-escalate if unacknowledged.
 
 ## Features
 
@@ -57,7 +54,7 @@ See [DECISIONS.md](DECISIONS.md).
 
 - Node.js
 - npm
-- Docker
+- A MongoDB Atlas connection string (free M0 tier is enough — nothing runs locally, no Docker needed)
 
 ## Setup
 
@@ -67,33 +64,31 @@ git clone <repository-url>
 
 cd PagerSlack
 
-### 2. Start MongoDB
+### 2. Configure environment
 
-docker compose up -d
+cd backend
+cp .env.example .env
+
+Fill in `.env` with your own Atlas connection string (`MONGO_URI`) and a `JWT_SECRET`.
 
 ### 3. Install backend dependencies
 
-cd backend
 npm install
 
-### 4. Configure environment
-
-Copy `.env.example` to `.env`.
-
-### 5. Seed database
+### 4. Seed the database
 
 npm run seed
 
-### 6. Start backend
+### 5. Start the backend
 
 npm run dev
 
-### 7. Install frontend dependencies
+### 6. Install frontend dependencies
 
 cd ../frontend
 npm install
 
-### 8. Start frontend
+### 7. Start the frontend
 
 npm run dev
 
@@ -108,14 +103,16 @@ lead@pagerslack.dev
 Manager:
 manager@pagerslack.dev
 
-Password:
-...
+Password (all three):
+PagerSlack2026!
 
 ## Testing
 
-From the project root:
+From the project root, with the backend and frontend both running (`npm run dev` in each):
 
-npx playwright test
+npm install
+npx playwright install chromium
+npm test
 
 ## Incident Escalation
 

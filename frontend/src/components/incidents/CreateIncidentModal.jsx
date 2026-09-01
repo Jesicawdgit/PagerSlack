@@ -35,8 +35,15 @@ export default function CreateIncidentModal({ isOpen, onClose, channels, onCreat
     <Modal isOpen={isOpen} onClose={onClose} title="Create Incident">
       <form onSubmit={handleSubmit}>
         <div className="mb-3">
-          <label className="form-label">Title</label>
-          <input className="form-control" value={title} onChange={(e) => setTitle(e.target.value)} />
+          <label className="form-label" htmlFor="incident-title">
+            Title
+          </label>
+          <input
+            id="incident-title"
+            className="form-control"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+          />
         </div>
         <div className="mb-3">
           <label className="form-label">Description</label>
