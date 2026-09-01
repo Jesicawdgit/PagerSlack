@@ -2,7 +2,7 @@
 
 A MERN-stack fuses Slack-style team chat with PagerDuty-style incident escalation. Team members message in channels, tag each other, and turn messages into incidents. Incidents carry severity, get assigned, must be acknowledged, and **automatically escalate** — `EMPLOYEE → TEAM_LEAD → MANAGER` — if nobody acknowledges them in time. Everything updates live over Socket.IO, and a built-in demo panel flips a fake "Order API" between healthy and failing so the whole incident story can be demoed without a real monitoring stack.
 
-This is a deliberate proof-of-concept: one seeded team, one user per role, deterministic escalation targeting. It's built to reliably demonstrate the core communication + incident-lifecycle loop, not to be a multi-tenant product — see [DECISIONS.md](DECISIONS.md#future-scope-out-of-bounds-for-this-poc-noted-for-a-real-version) for what a production version would add.
+proof-of-concept: one seeded team, one user per role, deterministic escalation targeting. It's built to reliably demonstrate the core communication + incident-lifecycle loop, not to be a multi-tenant product — see [DECISIONS.md](DECISIONS.md#future-scope-out-of-bounds-for-this-poc-noted-for-a-real-version) for what a production version would add.
 
 ## Features
 
