@@ -27,7 +27,13 @@ export default function Sidebar({ team, channels, onCreateChannel }) {
       style={{ width: '260px', flexShrink: 0 }}
     >
       <div className="mb-3">
-        <div className="fw-semibold">{team ? team.name : 'No team yet'}</div>
+        {team ? (
+          <NavLink to="/" end className="fw-semibold text-decoration-none">
+            {team.name}
+          </NavLink>
+        ) : (
+          <div className="fw-semibold">No team yet</div>
+        )}
       </div>
 
       {team && (

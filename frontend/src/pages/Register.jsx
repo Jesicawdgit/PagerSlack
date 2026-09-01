@@ -3,15 +3,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import Button from '../components/common/Button';
 
-const ROLES = ['EMPLOYEE', 'TEAM_LEAD', 'MANAGER'];
-
 export default function Register() {
   const { register } = useAuth();
   const navigate = useNavigate();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState('EMPLOYEE');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
@@ -20,7 +17,7 @@ export default function Register() {
     setError('');
     setSubmitting(true);
     try {
-      await register({ name, email, password, role });
+      await register({ name, email, password });
       navigate('/');
     } catch (err) {
       setError(err.response?.data?.error?.message || 'Something went wrong');
@@ -81,24 +78,7 @@ export default function Register() {
                 required
               />
             </div>
-            <div className="mb-4">
-              <label className="form-label small" htmlFor="role">
-                Role
-              </label>
-              <select
-                id="role"
-                className="form-select"
-                value={role}
-                onChange={(e) => setRole(e.target.value)}
-              >
-                {ROLES.map((r) => (
-                  <option key={r} value={r}>
-                    {r}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <Button type="submit" className="w-100" disabled={submitting}>
+            <Button type="submit" className="w-100 mt-1" disabled={submitting}>
               {submitting ? 'Creating account...' : 'Register'}
             </Button>
           </form>

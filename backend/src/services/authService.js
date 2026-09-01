@@ -1,8 +1,10 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
+const Team = require('../models/Team');
 const ApiError = require('../utils/ApiError');
 const env = require('../config/environment');
+const { SEEDED_TEAM_NAME } = require('../config/constants');
 
 const SALT_ROUNDS = 10;
 const TOKEN_EXPIRY = '7d';
@@ -11,14 +13,23 @@ async function hashPassword(password) {
   return bcrypt.hash(password, SALT_ROUNDS);
 }
 
-async function registerUser({ name, email, password, role }) {
+async function registerUser({ name, email, password }) {
   const existing = await User.findOne({ email });
   if (existing) {
     throw new ApiError(409, 'EMAIL_TAKEN', 'An account with this email already exists');
   }
 
+  const team = await Team.findOne({ name: SEEDED_TEAM_NAME });
+  if (!team) {
+    throw new ApiError(500, 'TEAM_NOT_FOUND', 'No team exists to join yet — run the seed script first');
+  }
+
   const hashed = await hashPassword(password);
-  const user = await User.create({ name, email, password: hashed, role });
+  const user = await User.create({ name, email, password: hashed, role: 'EMPLOYEE', team: team._id });
+
+  team.members.push(user._id);
+  await team.save();
+
   return user;
 }
 

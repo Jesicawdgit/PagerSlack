@@ -9,6 +9,7 @@ const authRoutes = require('./routes/authRoutes');
 const teamRoutes = require('./routes/teamRoutes');
 const channelRoutes = require('./routes/channelRoutes');
 const incidentRoutes = require('./routes/incidentRoutes');
+const demoRoutes = require('./routes/demoRoutes');
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/teams', teamRoutes);
 app.use('/api/v1/channels', channelRoutes);
 app.use('/api/v1/incidents', incidentRoutes);
+app.use('/api/v1/demo', demoRoutes);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 app.use(notFound);

@@ -6,7 +6,12 @@ import IncidentHeader from '../components/incidents/IncidentHeader';
 import IncidentTimeline from '../components/incidents/IncidentTimeline';
 import IncidentActions from '../components/incidents/IncidentActions';
 
-const INCIDENT_SOCKET_EVENTS = ['incident:updated', 'incident:acknowledged', 'incident:resolved'];
+const INCIDENT_SOCKET_EVENTS = [
+  'incident:updated',
+  'incident:acknowledged',
+  'incident:resolved',
+  'incident:escalated',
+];
 
 export default function IncidentDetails() {
   const { incidentId } = useParams();

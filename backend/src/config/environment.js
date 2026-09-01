@@ -17,6 +17,9 @@ const env = {
   JWT_SECRET: process.env.JWT_SECRET,
   CLIENT_URL: process.env.CLIENT_URL,
   NODE_ENV: process.env.NODE_ENV,
+  ESCALATION_POLL_INTERVAL_MS: Number(process.env.ESCALATION_POLL_INTERVAL_MS) || 5000,
+  ESCALATION_ACK_WINDOW_MS: Number(process.env.ESCALATION_ACK_WINDOW_MS) || 15000,
+  AUTO_ASSIGN_WINDOW_MS: Number(process.env.AUTO_ASSIGN_WINDOW_MS) || 10000,
 };
 
 module.exports = env;

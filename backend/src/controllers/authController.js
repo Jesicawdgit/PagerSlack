@@ -16,8 +16,8 @@ function setAuthCookie(res, token) {
 }
 
 async function register(req, res) {
-  const { name, email, password, role } = req.body;
-  const user = await authService.registerUser({ name, email, password, role });
+  const { name, email, password } = req.body;
+  const user = await authService.registerUser({ name, email, password });
   const token = authService.generateToken(user);
   setAuthCookie(res, token);
   res.status(201).json({ success: true, data: { user } });

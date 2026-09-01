@@ -43,8 +43,24 @@ function assertNotResolved(incident) {
   }
 }
 
+const ROLE_RANK = { EMPLOYEE: 0, TEAM_LEAD: 1, MANAGER: 2 };
+
+function assertCanAct(incident, actor) {
+  const isAssignee = incident.assignedTo && incident.assignedTo.toString() === actor._id.toString();
+  const hasEqualOrHigherRole = ROLE_RANK[actor.role] >= ROLE_RANK[incident.escalationLevel];
+
+  if (!isAssignee && !hasEqualOrHigherRole) {
+    throw new ApiError(
+      403,
+      'NOT_AUTHORIZED',
+      'Only the assignee, or someone at an equal or higher role than this incident\'s escalation level, can do this'
+    );
+  }
+}
+
 async function createIncident({ title, description, severity, channelId, createdById }) {
   await assertChannelExists(channelId);
+  const creator = await assertUserExists(createdById);
 
   const incidentNumber = await generateIncidentNumber();
   const incident = await Incident.create({
@@ -54,6 +70,7 @@ async function createIncident({ title, description, severity, channelId, created
     severity,
     channel: channelId,
     createdBy: createdById,
+    assignedTo: creator.role === 'EMPLOYEE' ? createdById : null,
   });
 
   await IncidentEvent.create({ incident: incident._id, type: 'CREATED', actor: createdById });
@@ -89,7 +106,11 @@ async function assignIncident({ incidentId, assigneeId, actorId }) {
   assertNotResolved(incident);
   const assignee = await assertUserExists(assigneeId);
 
+  const isFirstAssignment = !incident.assignedTo && incident.escalationLevel === 'EMPLOYEE';
   incident.assignedTo = assigneeId;
+  if (isFirstAssignment) {
+    incident.levelChangedAt = new Date();
+  }
   await incident.save();
 
   await IncidentEvent.create({
@@ -112,33 +133,35 @@ async function assignIncident({ incidentId, assigneeId, actorId }) {
   return incident;
 }
 
-async function acknowledgeIncident({ incidentId, actorId }) {
+async function acknowledgeIncident({ incidentId, actor }) {
   const incident = await assertIncidentExists(incidentId);
   assertNotResolved(incident);
   if (incident.status === 'ACKNOWLEDGED') {
     throw new ApiError(409, 'ALREADY_ACKNOWLEDGED', 'This incident is already acknowledged');
   }
+  assertCanAct(incident, actor);
 
   incident.status = 'ACKNOWLEDGED';
   await incident.save();
 
-  await IncidentEvent.create({ incident: incident._id, type: 'ACKNOWLEDGED', actor: actorId });
+  await IncidentEvent.create({ incident: incident._id, type: 'ACKNOWLEDGED', actor: actor._id });
 
   await incident.populate(INCIDENT_POPULATE);
   emitIncidentEvent('incident:acknowledged', incident.channel._id, incident);
   return incident;
 }
 
-async function resolveIncident({ incidentId, actorId }) {
+async function resolveIncident({ incidentId, actor }) {
   const incident = await assertIncidentExists(incidentId);
   if (incident.status === 'RESOLVED') {
     throw new ApiError(409, 'ALREADY_RESOLVED', 'This incident is already resolved');
   }
+  assertCanAct(incident, actor);
 
   incident.status = 'RESOLVED';
   await incident.save();
 
-  await IncidentEvent.create({ incident: incident._id, type: 'RESOLVED', actor: actorId });
+  await IncidentEvent.create({ incident: incident._id, type: 'RESOLVED', actor: actor._id });
 
   await incident.populate(INCIDENT_POPULATE);
   emitIncidentEvent('incident:resolved', incident.channel._id, incident);
@@ -153,4 +176,5 @@ module.exports = {
   assignIncident,
   acknowledgeIncident,
   resolveIncident,
+  INCIDENT_POPULATE,
 };

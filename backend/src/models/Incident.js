@@ -15,6 +15,7 @@ const incidentSchema = new mongoose.Schema(
     channel: { type: mongoose.Schema.Types.ObjectId, ref: 'Channel', required: true },
     createdBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
     assignedTo: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+    levelChangedAt: { type: Date, default: Date.now },
   },
   { timestamps: true }
 );

@@ -56,6 +56,17 @@ export default function AppLayout() {
     return () => socket.off('notification:new', handleNotification);
   }, [socket, pushToast]);
 
+  useEffect(() => {
+    if (!socket) return undefined;
+
+    function handleEscalated(incident) {
+      pushToast(`Incident ${incident.incidentNumber} escalated to you`);
+    }
+
+    socket.on('incident:escalated', handleEscalated);
+    return () => socket.off('incident:escalated', handleEscalated);
+  }, [socket, pushToast]);
+
   function dismissToast(id) {
     setToasts((prev) => prev.filter((toast) => toast.id !== id));
   }

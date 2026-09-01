@@ -13,6 +13,8 @@ const swaggerJsdoc = require('swagger-jsdoc');
  *     description: Messages within a channel
  *   - name: Incidents
  *     description: Incident creation and history
+ *   - name: Demo
+ *     description: Demo service panel (simulated Order API health)
  *
  * components:
  *   securitySchemes:
@@ -36,9 +38,8 @@ const swaggerJsdoc = require('swagger-jsdoc');
  *               name: { type: string }
  *               email: { type: string, format: email }
  *               password: { type: string, minLength: 8 }
- *               role: { type: string, enum: [EMPLOYEE, TEAM_LEAD, MANAGER] }
  *     responses:
- *       201: { description: User created, session cookie set }
+ *       201: { description: User created, joins the seeded team as EMPLOYEE, session cookie set }
  *       400: { description: Validation error }
  *       409: { description: Email already registered }
  *
@@ -294,6 +295,7 @@ const swaggerJsdoc = require('swagger-jsdoc');
  *         schema: { type: string }
  *     responses:
  *       200: { description: Incident acknowledged, ACKNOWLEDGED event written, incident:acknowledged emitted }
+ *       403: { description: Not the assignee and not an equal-or-higher role than the incident's escalation level }
  *       404: { description: Incident not found }
  *       409: { description: Incident already resolved or already acknowledged }
  *
@@ -309,8 +311,54 @@ const swaggerJsdoc = require('swagger-jsdoc');
  *         schema: { type: string }
  *     responses:
  *       200: { description: Incident resolved, RESOLVED event written, incident:resolved emitted }
+ *       403: { description: Not the assignee and not an equal-or-higher role than the incident's escalation level }
  *       404: { description: Incident not found }
  *       409: { description: Incident already resolved }
+ *
+ * /demo/services:
+ *   get:
+ *     summary: List demo services
+ *     tags: [Demo]
+ *     security: [{ cookieAuth: [] }]
+ *     responses:
+ *       200: { description: List of demo services }
+ *
+ * /demo/services/{id}/fail:
+ *   post:
+ *     summary: Flip a demo service to FAILING and broadcast the change to every connected session
+ *     tags: [Demo]
+ *     security: [{ cookieAuth: [] }]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     responses:
+ *       200: { description: Service marked FAILING, service:health_changed broadcast }
+ *       404: { description: Service not found }
+ *
+ * /demo/services/{id}/restore:
+ *   post:
+ *     summary: Flip a demo service back to HEALTHY and broadcast the change to every connected session
+ *     tags: [Demo]
+ *     security: [{ cookieAuth: [] }]
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema: { type: string }
+ *     responses:
+ *       200: { description: Service marked HEALTHY, service:health_changed broadcast }
+ *       404: { description: Service not found }
+ *
+ * /demo/orders:
+ *   get:
+ *     summary: Simulated Order API call — fails when the Order API demo service is FAILING
+ *     tags: [Demo]
+ *     security: [{ cookieAuth: [] }]
+ *     responses:
+ *       200: { description: Fake order data }
+ *       500: { description: Order API is currently unavailable }
  */
 
 const swaggerSpec = swaggerJsdoc({

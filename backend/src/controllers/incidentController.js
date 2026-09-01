@@ -39,7 +39,7 @@ async function assignIncident(req, res) {
 async function acknowledgeIncident(req, res) {
   const incident = await incidentService.acknowledgeIncident({
     incidentId: req.params.id,
-    actorId: req.user._id,
+    actor: req.user,
   });
   res.status(200).json({ success: true, data: { incident } });
 }
@@ -47,7 +47,7 @@ async function acknowledgeIncident(req, res) {
 async function resolveIncident(req, res) {
   const incident = await incidentService.resolveIncident({
     incidentId: req.params.id,
-    actorId: req.user._id,
+    actor: req.user,
   });
   res.status(200).json({ success: true, data: { incident } });
 }
