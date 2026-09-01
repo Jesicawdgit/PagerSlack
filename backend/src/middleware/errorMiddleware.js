@@ -1,3 +1,5 @@
+const logger = require('../utils/logger');
+
 function notFound(req, res, next) {
   res.status(404).json({
     success: false,
@@ -7,6 +9,9 @@ function notFound(req, res, next) {
 
 function errorHandler(err, req, res, next) {
   const status = err.status || 500;
+  if (status >= 500) {
+    logger.error(`${req.method} ${req.originalUrl} ->`, err.stack || err.message);
+  }
   res.status(status).json({
     success: false,
     error: {

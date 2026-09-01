@@ -17,7 +17,7 @@ async function createTeam({ name, creatorId }) {
     throw new ApiError(409, 'ALREADY_ON_TEAM', 'You already belong to a team');
   }
 
-  const team = await Team.create({ name, createdBy: creatorId });
+  const team = await Team.create({ name, createdBy: creatorId, members: [creatorId] });
   creator.team = team._id;
   await creator.save();
 
