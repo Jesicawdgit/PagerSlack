@@ -10,7 +10,7 @@ const demoServiceSchema = new mongoose.Schema(
   { timestamps: true }
 );
 
-const DemoService = mongoose.model('DemoService', demoServiceSchema);
+const DemoService = mongoose.model('DemoService', demoServiceSchema); //model
 
 module.exports = DemoService;
 module.exports.STATUSES = STATUSES;
