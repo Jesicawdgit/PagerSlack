@@ -9,6 +9,7 @@ export default function Register() {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState('EMPLOYEE');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
@@ -17,7 +18,7 @@ export default function Register() {
     setError('');
     setSubmitting(true);
     try {
-      await register({ name, email, password });
+      await register({ name, email, password, role });
       navigate('/');
     } catch (err) {
       setError(err.response?.data?.error?.message || 'Something went wrong');
@@ -77,6 +78,21 @@ export default function Register() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
               />
+            </div>
+            <div className="mb-3">
+              <label className="form-label small" htmlFor="role">
+                Role
+              </label>
+              <select
+                id="role"
+                className="form-select"
+                value={role}
+                onChange={(e) => setRole(e.target.value)}
+              >
+                <option value="EMPLOYEE">Employee</option>
+                <option value="TEAM_LEAD">Team Lead</option>
+                <option value="MANAGER">Manager</option>
+              </select>
             </div>
             <Button type="submit" className="w-100 mt-1" disabled={submitting}>
               {submitting ? 'Creating account...' : 'Register'}

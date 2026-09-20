@@ -47,13 +47,15 @@ const ROLE_RANK = { EMPLOYEE: 0, TEAM_LEAD: 1, MANAGER: 2 };
 
 function assertCanAct(incident, actor) {
   const isAssignee = incident.assignedTo && incident.assignedTo.toString() === actor._id.toString();
-  const hasEqualOrHigherRole = ROLE_RANK[actor.role] >= ROLE_RANK[incident.escalationLevel];
+  // Strictly higher: with several people per role, a peer must not be able to acknowledge
+  // someone else's incident and silently stop its escalation.
+  const hasHigherRole = ROLE_RANK[actor.role] > ROLE_RANK[incident.escalationLevel];
 
-  if (!isAssignee && !hasEqualOrHigherRole) {
+  if (!isAssignee && !hasHigherRole) {
     throw new ApiError(
       403,
       'NOT_AUTHORIZED',
-      'Only the assignee, or someone at an equal or higher role than this incident\'s escalation level, can do this'
+      'Only the assignee, or someone in a higher role than this incident\'s escalation level, can do this'
     );
   }
 }
@@ -176,5 +178,6 @@ module.exports = {
   assignIncident,
   acknowledgeIncident,
   resolveIncident,
+  assertCanAct,
   INCIDENT_POPULATE,
 };

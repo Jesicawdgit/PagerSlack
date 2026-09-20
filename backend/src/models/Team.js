@@ -19,6 +19,12 @@ const teamSchema = new mongoose.Schema(
         ref: 'User',
       },
     ],
+    // Round-robin cursor: the last user the escalation worker assigned at each level.
+    rotation: {
+      EMPLOYEE: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+      TEAM_LEAD: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+      MANAGER: { type: mongoose.Schema.Types.ObjectId, ref: 'User', default: null },
+    },
   },
   { timestamps: true }
 );

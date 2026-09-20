@@ -33,15 +33,16 @@ const swaggerJsdoc = require('swagger-jsdoc');
  *         application/json:
  *           schema:
  *             type: object
- *             required: [name, email, password]
+ *             required: [name, email, password, role]
  *             properties:
- *               name: { type: string }
+ *               name: { type: string, description: First name must be unique on the team (used for @mentions) }
  *               email: { type: string, format: email }
  *               password: { type: string, minLength: 8 }
+ *               role: { type: string, enum: [EMPLOYEE, TEAM_LEAD, MANAGER] }
  *     responses:
- *       201: { description: User created, joins the seeded team as EMPLOYEE, session cookie set }
+ *       201: { description: User created, joins the seeded team with the chosen role, session cookie set }
  *       400: { description: Validation error }
- *       409: { description: Email already registered }
+ *       409: { description: "Email already registered (EMAIL_TAKEN) or first name already used on the team (NAME_TAKEN)" }
  *
  * /auth/login:
  *   post:

@@ -20,9 +20,11 @@ test('unacknowledged incident escalates to the team lead', async ({ page }) => {
   await page.getByText(title).click();
   await expect(page.getByText('Assigned to John')).toBeVisible();
 
-  // Don't acknowledge — wait for the escalation worker to reassign to the team lead.
+  // Don't acknowledge — wait for the escalation worker to move it up the ladder.
   // Timeout covers the 15s demo ack window even if a locally-running backend
   // ignores the short env override this config passes when it starts its own server.
-  await expect(page.getByText('Assigned to Sarah')).toBeVisible({ timeout: 25000 });
-  await expect(page.getByText('Automatically escalated to Sarah')).toBeVisible();
+  // Which team lead receives it depends on the round-robin rotation (any registered
+  // lead can be next), so assert that it left John rather than naming a person.
+  await expect(page.getByText('Automatically escalated to')).toBeVisible({ timeout: 25000 });
+  await expect(page.getByText('Assigned to John')).toBeHidden();
 });

@@ -2,7 +2,7 @@
 
 A MERN-stack fuses Slack-style team chat with PagerDuty-style incident escalation. Team members message in channels, tag each other, and turn messages into incidents. Incidents carry severity, get assigned, must be acknowledged, and **automatically escalate** — `EMPLOYEE → TEAM_LEAD → MANAGER` — if nobody acknowledges them in time. Everything updates live over Socket.IO, and a built-in demo panel flips a fake "Order API" between healthy and failing so the whole incident story can be demoed without a real monitoring stack.
 
-proof-of-concept: one seeded team, one user per role, deterministic escalation targeting. It's built to reliably demonstrate the core communication + incident-lifecycle loop, not to be a multi-tenant product — see [DECISIONS.md](DECISIONS.md#future-scope-out-of-bounds-for-this-poc-noted-for-a-real-version) for what a production version would add.
+proof-of-concept: one seeded team, self-chosen roles, deterministic round-robin escalation targeting. It's built to reliably demonstrate the core communication + incident-lifecycle loop, not to be a multi-tenant product — see [DECISIONS.md](DECISIONS.md#future-scope-out-of-bounds-for-this-poc-noted-for-a-real-version) for what a production version would add.
 
 ## Features
 
@@ -146,7 +146,7 @@ npm run dev                 # frontend on :5173, proxies /api to the backend
 | Team Lead | lead@pagerslack.dev | PagerSlack2026! |
 | Manager | manager@pagerslack.dev | PagerSlack2026! |
 
-New registrations always join the seeded "Engineering" team as `EMPLOYEE` — there's no role picker and no invite/join flow (see [DECISIONS.md](DECISIONS.md#future-scope-out-of-bounds-for-this-poc-noted-for-a-real-version)).
+New registrations join the seeded "Engineering" team with the role they pick (Employee, Team Lead or Manager) — there's no invite/join flow, so anyone can pick any role (a demo trade-off; see [DECISIONS.md](DECISIONS.md#dynamic-roles--round-robin-escalation)). First names must be unique on the team so `@mentions` stay unambiguous. Escalation moves an unacknowledged incident up the ladder (Employee → Team Lead → Manager) and picks among the people at each level round-robin.
 
 ## Testing
 

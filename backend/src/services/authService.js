@@ -13,11 +13,31 @@ async function hashPassword(password) {
   return bcrypt.hash(password, SALT_ROUNDS);
 }
 
-async function registerUser({ name, email, password }) {
+function escapeRegex(text) {
+  return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
+// Mentions and "@FirstName" system messages match on first name, so two people on the
+// team sharing one would both get pinged and assignments would be ambiguous.
+async function assertFirstNameFree(name) {
+  const firstName = name.trim().split(/\s+/)[0];
+  const clash = await User.findOne({ name: new RegExp(`^${escapeRegex(firstName)}(\\s|$)`, 'i') });
+  if (clash) {
+    throw new ApiError(
+      409,
+      'NAME_TAKEN',
+      `Someone named ${firstName} is already on the team — use a different first name so @mentions stay unambiguous`
+    );
+  }
+}
+
+async function registerUser({ name, email, password, role }) {
   const existing = await User.findOne({ email });
   if (existing) {
     throw new ApiError(409, 'EMAIL_TAKEN', 'An account with this email already exists');
   }
+
+  await assertFirstNameFree(name);
 
   const team = await Team.findOne({ name: SEEDED_TEAM_NAME });
   if (!team) {
@@ -25,7 +45,7 @@ async function registerUser({ name, email, password }) {
   }
 
   const hashed = await hashPassword(password);
-  const user = await User.create({ name, email, password: hashed, role: 'EMPLOYEE', team: team._id });
+  const user = await User.create({ name, email, password: hashed, role, team: team._id });
 
   team.members.push(user._id);
   await team.save();
