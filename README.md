@@ -11,7 +11,6 @@ This is a proof-of-concept: one seeded team, self-chosen roles, deterministic ro
 | Live app | [pager-slack-nuaq.vercel.app](https://pager-slack-nuaq.vercel.app/login) |
 | API docs (local) | [localhost:5000/api-docs](http://localhost:5000/api-docs/#/) — start the backend first |
 | API docs (live) | [pagerslack.onrender.com/api-docs](https://pagerslack.onrender.com/api-docs) |
-| Demo video | [GitHub Releases](https://github.com/Jesicawdgit/PagerSlack/releases) |
 | Demo video google doc link| (https://drive.google.com/file/d/1DC1zWhIIlVQoBc-1ZpzdpQQ7tsIeoz_d/view?usp=sharing)  |
 
 The backend runs on Render's free tier, which sleeps when idle — the first request after a quiet spell can take 30–50 seconds. See [Known limitations](#known-limitations) for a browser caveat on the live link.
